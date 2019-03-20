@@ -1,5 +1,5 @@
 {
-    "name": "@slimio/agent",
+    "name": "@slimio/addon-agent",
     "version": "1.0.0",
     "description": "SlimIO Agent built-in addon",
     "main": "index.js",
