@@ -18,8 +18,7 @@ async function listAddons() {
 }
 
 agent.on("start", () => {
-    console.log("agent started!");
-    console.log(core);
+    agent.ready();
 });
 
 agent.registerCallback("global_info", globalInfo);
