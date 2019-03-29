@@ -9,6 +9,7 @@ const core = global.slimio_core;
 async function globalInfo() {
     return {
         root: core.root,
+        silent: core.silent,
         coreVersion: process.env.coreVersion
     };
 }
