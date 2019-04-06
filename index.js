@@ -1,7 +1,7 @@
 // Require Third-party Dependencies
 const Addon = require("@slimio/addon");
 
-const agent = new Addon("agent");
+const agent = new Addon("gate");
 
 // Retrieve global core
 const core = global.slimio_core;
