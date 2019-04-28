@@ -1,7 +1,7 @@
 {
-    "name": "@slimio/addon-agent",
+    "name": "@slimio/gate",
     "version": "1.0.0",
-    "description": "SlimIO Agent built-in addon",
+    "description": "SlimIO Gate built-in addon",
     "main": "index.js",
     "scripts": {
         "test": "ava --verbose",
