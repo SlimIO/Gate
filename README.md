@@ -1,5 +1,5 @@
-# @slimio/agent
-SlimIO Agent built-in addon
+# Gate
+SlimIO Gate built-in addon
 
 ## Getting Started
 
