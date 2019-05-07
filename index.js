@@ -15,7 +15,7 @@ async function globalInfo() {
 }
 
 async function listAddons() {
-    return [...core.addons.keys()];
+    return [...core.addons.keys()].map((addonName) => addonName.toLowerCase());
 }
 
 gate.on("start", () => {
