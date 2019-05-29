@@ -10,3 +10,10 @@ $ npm i @slimio/agent
 # or
 $ yarn add @slimio/agent
 ```
+
+## Dependencies
+
+|Name|Refactoring|Security Risk|Usage|
+|---|---|---|---|
+|[@slimio/addon](https://github.com/SlimIO/Addon#readme)|Minor|High|Addon default class|
+
