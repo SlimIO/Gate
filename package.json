@@ -24,7 +24,7 @@
     },
     "homepage": "https://github.com/SlimIO/Addon-Agent#readme",
     "dependencies": {
-        "@slimio/addon": "^0.16.0"
+        "@slimio/addon": "^0.17.1"
     },
     "devDependencies": {
         "@commitlint/cli": "^7.2.1",
