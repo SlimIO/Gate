@@ -1,19 +1,28 @@
 # Gate
-SlimIO Gate built-in addon
+SlimIO Gate built-in addon. This addon is an abstraction of core (as Addon).
+
+> Note: it use global.slimio_core (registered as global by the core) to work.
+
+## Features
+- Expose core data to callback(s).
+- Expose available addons.
 
 ## Getting Started
-
-This package is available in the Node Package Repository and can be easily installed with [npm](https://docs.npmjs.com/getting-started/what-is-npm) or [yarn](https://yarnpkg.com).
+This package is available in the SlimIO Package Registry and can be easily installed with [SlimIO CLI](https://github.com/SlimIO/CLI).
 
 ```bash
-$ npm i @slimio/agent
+$ slimio --add gate
 # or
-$ yarn add @slimio/agent
+$ slimio --add https://github.com/SlimIO/Gate
 ```
+
+> Note: this addon is automatically installed with the slimio -i command.
 
 ## Dependencies
 
 |Name|Refactoring|Security Risk|Usage|
 |---|---|---|---|
-|[@slimio/addon](https://github.com/SlimIO/Addon#readme)|Minor|High|Addon default class|
+|[@slimio/addon](https://github.com/SlimIO/Addon#readme)|Minor|Low|Addon Container|
 
+## Licence
+MIT
