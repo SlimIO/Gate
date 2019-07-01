@@ -10,7 +10,7 @@ async function globalInfo() {
     return {
         root: core.root,
         silent: core.silent,
-        coreVersion: process.env.coreVersion
+        coreVersion: global.coreVersion || "0.0.0"
     };
 }
 
