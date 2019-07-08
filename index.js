@@ -1,45 +1,57 @@
 // Require Node.js Dependencies
-const { readFile } = require("fs").promises;
-const { join } = require("path");
+const { readdir, readFile } = require("fs").promises;
+const { join, extname } = require("path");
 
 // Require Third-party Dependencies
 const Addon = require("@slimio/addon");
 
 const gate = new Addon("gate");
 
-// Retrieve global core
-const core = global.slimio_core;
+// CONSTANTS
+const CORE = global.slimio_core;
+const DUMP_DIR = join(__dirname, "..", "..", "debug");
 
 async function globalInfo() {
     return {
-        root: core.root,
-        silent: core.silent,
+        root: CORE.root,
+        silent: CORE.silent,
         coreVersion: global.coreVersion || "0.0.0"
     };
 }
 
 async function listAddons() {
-    return [...core.addons.keys()].map((addonName) => addonName.toLowerCase());
+    return [...CORE.addons.keys()].map((addonName) => addonName.toLowerCase());
 }
 
 async function getRoutingTable() {
-    return [...core.routingTable.keys()];
+    return [...CORE.routingTable.keys()];
 }
 
 async function getConfig(header, path) {
     if (typeof path === "string") {
-        return core.config.get(path);
+        return CORE.config.get(path);
     }
 
-    return core.config.payload;
+    return CORE.config.payload;
 }
 
 async function setConfig(header, path, value) {
-    const { config } = core;
-    config.set(path, value);
-    config.lazyWriteOnDisk();
+    CORE.config.set(path, value);
+    CORE.config.lazyWriteOnDisk();
 }
 
+async function dumpList() {
+    const dirents = await readdir(DUMP_DIR, { withFileTypes: true });
+
+    return dirents.filter((row) => row.isFile() && extname(row.name) === ".json").map((row) => row.name);
+}
+
+async function getDump(header, name) {
+    const completeName = extname(name) === ".json" ? name : `${name}.json`;
+    const payload = await readFile(join(DUMP_DIR, completeName), "utf-8");
+
+    return JSON.parse(payload);
+}
 
 gate.on("start", async() => {
     await gate.ready();
@@ -48,9 +60,9 @@ gate.on("start", async() => {
 gate.registerCallback("global_info", globalInfo);
 gate.registerCallback("list_addons", listAddons);
 gate.registerCallback("get_routing_table", getRoutingTable);
-
-// Agent.json configuration
 gate.registerCallback("get_config", getConfig);
 gate.registerCallback("set_config", setConfig);
+gate.registerCallback("dump_list", dumpList);
+gate.registerCallback("get_dump", getDump);
 
 module.exports = gate;
