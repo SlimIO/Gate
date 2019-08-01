@@ -18,8 +18,7 @@
         "monitoring"
     ],
     "files": [
-        "index.js",
-        "slimio.toml"
+        "index.js"
     ],
     "author": "SlimIO",
     "license": "MIT",
