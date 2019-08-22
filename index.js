@@ -64,9 +64,15 @@ async function getConfig(header, path) {
  * @param {!Addon.CallbackHeader} header callback header
  * @param {!string} path key path in the configuration file
  * @param {!string} value key value
- * @returns {Promise<any>}
+ * @returns {Promise<void>}
+ *
+ * @throws {TypeError}
  */
 async function setConfig(header, path, value) {
+    if (typeof path !== "string" || typeof value !== "string") {
+        throw new TypeError("path and value must be typeof string");
+    }
+
     CORE.config.set(path, value);
     CORE.config.lazyWriteOnDisk();
 }
@@ -78,8 +84,11 @@ async function setConfig(header, path, value) {
  */
 async function dumpList() {
     const dirents = await readdir(DUMP_DIR, { withFileTypes: true });
+    const jsonFiles = dirents
+        .filter((dirent) => dirent.isFile() && extname(dirent.name) === ".json")
+        .map((dirent) => dirent.name);
 
-    return dirents.filter((row) => row.isFile() && extname(row.name) === ".json").map((row) => row.name);
+    return jsonFiles;
 }
 
 /**
@@ -87,9 +96,15 @@ async function dumpList() {
  * @function getDump
  * @param {!Addon.CallbackHeader} header callback header
  * @param {!string} name dump name
- * @returns {Promise<any>}
+ * @returns {Promise<object | null>}
+ *
+ * @throws {TypeError}
  */
 async function getDump(header, name) {
+    if (typeof name !== "string") {
+        throw new TypeError("name must be a string");
+    }
+
     const completeName = extname(name) === ".json" ? name : `${name}.json`;
     try {
         const filePath = join(DUMP_DIR, completeName);
