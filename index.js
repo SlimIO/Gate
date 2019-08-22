@@ -1,7 +1,7 @@
 "use strict";
 
 // Require Node.js Dependencies
-const { readdir, readFile } = require("fs").promises;
+const { readdir, readFile, access } = require("fs").promises;
 const { join, extname } = require("path");
 
 // Require Third-party Dependencies
@@ -19,11 +19,10 @@ const DUMP_DIR = join(__dirname, "..", "..", "debug");
  * @returns {Promise<any>}
  */
 async function globalInfo() {
-    return {
-        root: CORE.root,
-        silent: CORE.silent,
-        coreVersion: global.coreVersion || "0.0.0"
-    };
+    const { root, silent } = CORE;
+    const coreVersion = global.coreVersion || "0.0.0";
+
+    return { root, silent, coreVersion };
 }
 
 /**
@@ -47,7 +46,7 @@ async function getRoutingTable() {
 /**
  * @async
  * @function getConfig
- * @param {*} header callback header
+ * @param {!Addon.CallbackHeader} header callback header
  * @param {!string} path key path in the configuration file
  * @returns {Promise<any>}
  */
@@ -62,7 +61,7 @@ async function getConfig(header, path) {
 /**
  * @async
  * @function setConfig
- * @param {*} header callback header
+ * @param {!Addon.CallbackHeader} header callback header
  * @param {!string} path key path in the configuration file
  * @param {!string} value key value
  * @returns {Promise<any>}
@@ -86,15 +85,23 @@ async function dumpList() {
 /**
  * @async
  * @function getDump
- * @param {*} header callback header
+ * @param {!Addon.CallbackHeader} header callback header
  * @param {!string} name dump name
  * @returns {Promise<any>}
  */
 async function getDump(header, name) {
     const completeName = extname(name) === ".json" ? name : `${name}.json`;
-    const payload = await readFile(join(DUMP_DIR, completeName), "utf-8");
+    try {
+        const filePath = join(DUMP_DIR, completeName);
 
-    return JSON.parse(payload);
+        await access(filePath);
+        const str = await readFile(filePath, "utf-8");
+
+        return JSON.parse(str);
+    }
+    catch (err) {
+        return null;
+    }
 }
 
 gate.on("start", async() => {
