@@ -21,8 +21,9 @@ const DUMP_DIR = join(__dirname, "..", "..", "debug");
 async function globalInfo() {
     const { root, silent } = CORE;
     const coreVersion = global.coreVersion || "0.0.0";
+    const versions = process.versions;
 
-    return { root, silent, coreVersion };
+    return { root, silent, coreVersion, versions };
 }
 
 /**
