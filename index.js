@@ -120,6 +120,26 @@ async function getDump(header, name) {
     }
 }
 
+/**
+ * @async
+ * @function startAddon
+ * @param {!Addon.CallbackHeader} header callback header
+ * @param {!string} addonName addon to start!
+ * @returns {Promise<void>}
+ */
+async function startAddon(header, addonName) {
+    if (!CORE.addons.has(addonName)) {
+        return;
+    }
+
+    const addon = CORE.addons.get(addonName);
+    if (addon.started) {
+        return;
+    }
+
+    await CORE.setupAddonConfiguration(addonName, { active: true, standalone: false });
+}
+
 gate.on("start", async() => {
     await gate.ready();
 });
@@ -131,6 +151,7 @@ gate.registerCallback(globalInfo)
     .registerCallback(getConfig)
     .registerCallback(setConfig)
     .registerCallback(dumpList)
-    .registerCallback(getDump);
+    .registerCallback(getDump)
+    .registerCallback(startAddon);
 
 module.exports = gate;
