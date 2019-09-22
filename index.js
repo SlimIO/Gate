@@ -13,6 +13,9 @@ const gate = new Addon("gate");
 const CORE = global.slimio_core;
 const DUMP_DIR = join(__dirname, "..", "..", "debug");
 
+// SYMBOLS
+const SYM_PARALLEL = Symbol.for("ParallelAddon");
+
 /**
  * @async
  * @function globalInfo
@@ -140,6 +143,35 @@ async function startAddon(header, addonName) {
     await CORE.setupAddonConfiguration(addonName, { active: true, standalone: false });
 }
 
+/**
+ * @async
+ * @function getLockState
+ * @param {!Addon.CallbackHeader} header callback header
+ * @returns {Promise<object>}
+ */
+async function getLockState(header) {
+    const currentAddon = CORE.addons.get(header.from);
+    const result = {};
+    for (const addonName of currentAddon.locks.keys()) {
+        const localAddon = CORE.addons.get(addonName);
+        const payload = { ready: false, started: false, awake: false };
+
+        // eslint-disable-next-line
+        if (Boolean(localAddon[SYM_PARALLEL])) {
+            // TODO: how do we handle parallel addon ?
+        }
+        else {
+            payload.ready = localAddon.isReady;
+            payload.started = localAddon.isStarted;
+            payload.awake = localAddon.isAwake;
+        }
+
+        result[addonName] = payload;
+    }
+
+    return result;
+}
+
 gate.on("start", async() => {
     await gate.ready();
 });
@@ -152,6 +184,7 @@ gate.registerCallback(globalInfo)
     .registerCallback(setConfig)
     .registerCallback(dumpList)
     .registerCallback(getDump)
-    .registerCallback(startAddon);
+    .registerCallback(startAddon)
+    .registerCallback(getLockState);
 
 module.exports = gate;
