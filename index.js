@@ -1,13 +1,14 @@
-"use strict";
-
 // Require Node.js Dependencies
-const { readdir, readFile, access } = require("fs").promises;
-const { join, extname } = require("path");
+import { promises as fs } from "fs";
+import { fileURLToPath } from "url";
+import { join, extname, dirname } from "path";
+const { readdir, readFile, access } = fs;
 
 // Require Third-party Dependencies
-const Addon = require("@slimio/addon");
+import Addon from "@slimio/addon";
 
-const gate = new Addon("gate");
+// Node.js CJS CONSTANTS
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // CONSTANTS
 const CORE = global.slimio_core;
@@ -15,6 +16,8 @@ const DUMP_DIR = join(__dirname, "..", "..", "debug");
 
 // SYMBOLS
 const SYM_PARALLEL = Symbol.for("ParallelAddon");
+
+const gate = new Addon("gate");
 
 /**
  * @async
@@ -172,10 +175,6 @@ async function getLockState(header) {
     return result;
 }
 
-gate.on("start", async() => {
-    await gate.ready();
-});
-
 // Register all callbacks
 gate.registerCallback(globalInfo)
     .registerCallback(listAddons)
@@ -187,4 +186,4 @@ gate.registerCallback(globalInfo)
     .registerCallback(startAddon)
     .registerCallback(getLockState);
 
-module.exports = gate;
+export default gate;
